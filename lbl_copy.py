@@ -58,7 +58,7 @@ class LogBilinearLanguageModel(object):
         # training contexts
         self.x = x
         print" x val",(type(x))
-        print x.get_value()
+
         #print "vocal size " ,(Vocal_size)
         # initialize context word embedding matrix R of shape (V, K)
         # TODO: parameterize initialization
@@ -85,7 +85,7 @@ class LogBilinearLanguageModel(object):
         self.b = theano.shared(value=b_values, name='b', borrow=True)
         
         # context word representations
-        
+        """
         x=x.flatten()
         flat_vector=T.fmatrix()
         for i in range(100):
@@ -94,7 +94,7 @@ class LogBilinearLanguageModel(object):
         print(flat_vector)
 
         self.r_w = self.R[x]
-         
+        """
         # predicted word representation for target word
         self.q_hat = T.dot(self.x, self.C.T)
         self.q_hat=T.tanh(self.q_hat)
