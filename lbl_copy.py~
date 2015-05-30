@@ -4,9 +4,6 @@ from dataset import Dictionary, load_corpus
 import nltk, re, pprint,urllib2
 from nltk import word_tokenize
 
-from theano import config
-config.compute_test_value = 'off'
-
 import cPickle
 import numpy as np
 import theano
@@ -22,28 +19,20 @@ class LogBilinearLanguageModel(object):
     """
     Log-bilinear language model class
     context are the previous words which we give as input inorder to predict the next word from vocablary
-    Vocal_size is the size of vocablary
-    K_feature if the size of feature vector for word here its is 20
+    V is the size of vocablary
+    K if the size of feature vector for word here its is 20
     content_sz is the no of previos words we need to predict the next words , here its 2
 
     """
 
 
-    def __init__(self, x, Vocal_size, K_feature, hidden_units,context_sz, rng):
+    def __init__(self, context, V, K, context_sz, rng):
         """
         Initialize the parameters of the language model
-        x is a of the form 
-[[  21  995  221]
- [1498  161   17]
- [  22 1211  922]
- ..., 
- [ 100 1393 1360]
- [1140  227  684]
- [1321 1408  922]]
 
         R is the look up vocablary matrix which gives feature vector for each word
-        Q is weight matrix for upper layer between hidden layer and output layer 
-        C is the weight matrix between input layer and hidden layer 
+        Q is weight matrix for upper layer between hidden layer and output layer of size V*K 
+        C is the weight matrix between input layer and hidden layer ,here it is 3D type , i.e. (context_sz, K, K)
         b is the bias for output layer
         r_w is the concatenated input for the set of word , i.e if we give 2 words , it will give concatenated feature vector for both words
         q_hat is the dot product for weight matrix C and input r_w
@@ -54,122 +43,75 @@ class LogBilinearLanguageModel(object):
 
         """
 
-       
+        """
+        now how did i convert the words into ids, 
+        i actually did know how to do it , so i got it from a git project ,
+        where they where reading the any text file and convert it into vocablary and corpus
+        and assigning ids to every word in asecending numbers
+
+        and for every word i am having feature vector of size 20
+        and once i have feature vector its easy to do feed forward in neural network 
+
+        and for backpropogation i used the general method of theano , i.e. T.gparam(cost,params)
+        and updated weights
+
+
+        """
         # training contexts
-        self.x = x
-        print" x val",(type(x))
-        print x.get_value()
-        #print "vocal size " ,(Vocal_size)
+        self.context = context
         # initialize context word embedding matrix R of shape (V, K)
         # TODO: parameterize initialization
-        R_values=np.asarray(rng.uniform(-2, 2, size=(Vocal_size, K_feature)), 
+        R_values = np.asarray(rng.uniform(-0.01, 0.01, size=(V, K)), 
                               dtype=theano.config.floatX)
 
         self.R = theano.shared(value=R_values, name='R', borrow=True)
         # initialize target word embedding matrix Q of shape (V, K)
-        Q_values = np.asarray(rng.uniform(-2, 2, size=(Vocal_size, hidden_units)), 
+        Q_values = np.asarray(rng.uniform(-0.01, 0.01, size=(V, K)), 
                               dtype=theano.config.floatX)
         self.Q = theano.shared(value=Q_values, name='Q', borrow=True)
         # initialize weight tensor C of shape (context_sz, K, K)
-        C_values = np.asarray(rng.normal(0, math.sqrt(2), 
-                                         size=(hidden_units,context_sz*K_feature)), 
+        C_values = np.asarray(rng.normal(0, math.sqrt(0.1), 
+                                         size=(context_sz, K, K)), 
                               dtype=theano.config.floatX)
         self.C = theano.shared(value=C_values, name='C', borrow=True)
-        
-        
-        self.C = theano.shared(value=C_values, name='C', borrow=True)
-
         # initialize bias vector 
-        b_values = np.asarray(rng.normal(0, math.sqrt(2), size=(Vocal_size,)), 
+        b_values = np.asarray(rng.normal(0, math.sqrt(0.1), size=(V,)), 
                               dtype=theano.config.floatX)
         self.b = theano.shared(value=b_values, name='b', borrow=True)
-        
         # context word representations
-        
-        x=x.flatten()
-        flat_vector=T.fmatrix()
-        for i in range(100):
-            flat_vector.append( self.R[ x[i] ] )
-        #matrix_input=T.reshape(flat_vector,())     
-        print(flat_vector)
-
-        self.r_w = self.R[x]
-         
+        self.r_w = self.R[context]
         # predicted word representation for target word
-        self.q_hat = T.dot(self.x, self.C.T)
+        self.q_hat = T.tensordot(self.C, self.r_w, axes=[[0,1], [1,2]])
         self.q_hat=T.tanh(self.q_hat)
         # similarity score between predicted word and all target words
-        self.s =T.dot(self.q_hat,(self.Q.T)) +T.reshape(self.b, (Vocal_size,1))
+        self.s = T.transpose(T.dot(self.Q, self.q_hat) + T.reshape(self.b, (V,1)))
         # softmax activation function
-        self.p_w_given_h = T.nnet.softmax(self.s) 
+        self.p_w_given_h = T.nnet.softmax(self.s)
         # parameters of the model
         self.params = [self.R, self.Q, self.C, self.b]
-        print(self.s)
+        
         
     def negative_log_likelihood(self, y):
         # take the logarithm with base 2
-        
         return -T.mean(T.log2(self.p_w_given_h)[T.arange(y.shape[0]), y])
 
-
-
-def make_instances(text_tokenized, dictionary, context_sz):
+        
+def make_instances(corpus, vocab, context_sz, start_symb='<s>', end_symb='</s>'):
     def shared_dataset(data_xy, borrow=True):
         data_x, data_y = data_xy
-
-        print "datax\n",(data_x)
-        shared_x = theano.shared(value=np.asarray(data_x, dtype=theano.config.floatX), borrow=borrow)
-        shared_y = theano.shared(value=np.asarray(data_y, dtype=np.int32), borrow=borrow)
-        #print "shared x",(shared_x.get_value(borrow=True))
+        shared_x = theano.shared(np.asarray(data_x, dtype=np.int32), borrow=borrow)
+        shared_y = theano.shared(np.asarray(data_y, dtype=np.int32), borrow=borrow)
         return shared_x, shared_y
-
     data = []
-    labels = []   
-    token=0     
-    no_tokens=len(text_tokenized)
-    #print(text_tokenized)
-    for token in range(0,no_tokens,3):
-        
-
-        sentence=text_tokenized[token:token+context_sz]
-        #print(sentence)
-        #print(token)
-        token+=context_sz
-        if (token<len(text_tokenized)):
-            concatenated_context=list()
-            for i in range(context_sz):
-                
-                                        if(sentence[i] in dictionary.keys()): 
-                                                concatenated_context.append( dictionary[sentence[i]])
-                                        else:
-                                                concatenated_context.append( dictionary["oov"])
-        
-            data.append(np.array(concatenated_context).flatten()) 
-            """ this data is in the form of concatenated nos for respective words of sentence"""
-            if(text_tokenized[token] in dictionary.keys()): 
-                                                #if i want my yout put word to be in fecture vector form uncomment it , 
-                                                #else y contains number for the prediction context 
-                                                #labels.append(dictionary[text_tokenized[token]])
-                                                labels.append(token)
-            else:
-                                                #labels.append(dictionary["oov"])
-                                                labels.append(no_tokens)
-
-        #if (token<len(text_tokenized-1)):
-        token+=1
-    
-    data=np.asarray(data)  
-    
-    
-   
-    #print(data)
-    #print(labels)
-    labels= ( (np.array(labels)).flatten())
-    #print(data)
-    #print(labels)
+    labels = []        
+    for sentence in corpus:
+        # add 'start of sentence' and 'end of sentence' context
+        sentence = [start_symb] * context_sz + sentence + [end_symb] * context_sz
+        sentence = vocab.doc_words_to_ids(sentence, update_dict=False)
+        for instance in zip(*(sentence[i:] for i in xrange(context_sz+1))):
+            data.append(instance[:-1])
+            labels.append(instance[-1])
     train_set_x, train_set_y = shared_dataset([data, labels])
-    #print('ss')
-    #print(train_set_x.get_value(borrow=True))
     return train_set_x, train_set_y
 
 
@@ -177,7 +119,7 @@ def make_instances(text_tokenized, dictionary, context_sz):
 
     
 def train_lbl(train_data='train', dev_data='dev', test_data='test', 
-              K=5,hidden_units=10, context_sz=3, learning_rate=1.0, 
+              K=20, context_sz=2, learning_rate=1.0, 
               rate_update='simple', epochs=10, 
               batch_size=100, rng=None, patience=None, 
               patience_incr=2, improvement_thrs=0.995, 
@@ -185,9 +127,12 @@ def train_lbl(train_data='train', dev_data='dev', test_data='test',
     """
     Train log-bilinear model
     """
-   
-    
-    
+    # create vocabulary from train data, plus <s>, </s>
+    vocab = Dictionary.from_corpus(train_data, unk='<unk>')
+    vocab.add_word('<s>')
+    vocab.add_word('</s>')
+    V = vocab.size()
+
 # create random number generator
     #rng = np.random.RandomState(123)
 
@@ -197,68 +142,30 @@ def train_lbl(train_data='train', dev_data='dev', test_data='test',
 
     # load data
     print("Load data ...")
-    #url = "http://www.gutenberg.org/files/2554/2554.txt"
-    #edgeworth-parents.txtresponse = urllib2.urlopen(url)
-    #raw = response.read()
     
+    with open('train' , 'rb') as fin:
+        train_data = [line.split() for line in fin.readlines() if line.strip()]  
+        print(train_data[:14])
+        print(  type(np.asarray(train_data))  
 
-    """ here i am reading text file and tokenzing it """
-    #edgeworth-parents.txt
-    with open('blake-poems.txt', 'rb') as fin:
-        raw = fin.read()
-    tokens=word_tokenize(raw)
-    text = nltk.Text(tokens)
-    words = [w.lower() for w in tokens]
-    train_data=words
-
-    vocab_data=sorted(set(words))
-    vocab_data.append("oov")
-    size=len(vocab_data)
-    no=range(size)
-    print('size of vocab dictionary %i'%size)
-    print('size fo training data %i'%len(text))
+    with open('dev', 'rb') as fin:
+        dev_data = [line.split() for line in fin.readlines() if line.strip()]
     
-
-    #print(R_values)
-
-    vocab_dic = zip(vocab_data,no)
-    dictionary=dict(vocab_dic)
-    #print(dictionary['how'])
-    #'austen-emma.txt'
-    with open('burgess-busterbrown.txt', 'rb') as fin:
-        raw_d = fin.read()
-    tokens=word_tokenize(raw_d)
-    text = nltk.Text(tokens)
-    words = [w.lower() for w in tokens]
-    dev_data = words
-    #'melville-moby_dick.txt'
-    with open('shakespeare-macbeth.txt', 'rb') as fin:
-        raw_t = fin.read()
-    tokens=word_tokenize(raw_t)
-    text = nltk.Text(tokens)
-    words = [w.lower() for w in tokens]
-    test_data = words
+    with open('test', 'rb') as fin:
+            test_data = [line.split() for line in fin.readlines() if line.strip()]
    
 
-    """ here i am giving set of words which i made in above steps to fuction make_instance 
-        and it will return me context in the form of set of numbers representing the context like [152,456,85] and the next word like[45] """
     # generate (context, target) pairs of word ids
-    train_set_x, train_set_y = make_instances(train_data, dictionary, context_sz)
-    dev_set_x, dev_set_y = make_instances(dev_data, dictionary, context_sz)
-    test_set_x, test_set_y = make_instances(test_data, dictionary, context_sz)
-    #print(train_set_x.eval())    
-    print "train x type " ,(type(train_set_x))
+    train_set_x, train_set_y = make_instances(train_data, vocab, context_sz)
+    dev_set_x, dev_set_y = make_instances(dev_data, vocab, context_sz)
+    test_set_x, test_set_y = make_instances(test_data, vocab, context_sz)
+    
+
     # number of minibatches for training
     n_train_batches = train_set_x.get_value(borrow=True).shape[0] / batch_size
     n_dev_batches = dev_set_x.get_value(borrow=True).shape[0] / batch_size
     n_test_batches = test_set_x.get_value(borrow=True).shape[0] / batch_size
 
-    print('no of batches in training data%i'%n_train_batches)
-    print('shape of dataset xrange')
-    print(train_set_x.get_value(borrow=True).shape)
-    #print(train_set_x.get_value(borrow=True)[0:50])
-    print('shape of dataset y')
-    print(train_set_y.get_value(borrow=True).shape)
     # build the model
     print("Build the model ...")
  
@@ -266,10 +173,8 @@ def train_lbl(train_data='train', dev_data='dev', test_data='test',
     x = T.imatrix('x')
     y = T.ivector('y')
     # create log-bilinear model
-    # size is the size of vocab dict 
-    
-    lbl = LogBilinearLanguageModel(x, size, K,hidden_units, context_sz, rng)
-    
+    lbl = LogBilinearLanguageModel(x, V, K, context_sz, rng)
+
     # cost function is negative log likelihood of the training data
     cost = lbl.negative_log_likelihood(y)
     # compute the gradient
@@ -291,17 +196,15 @@ def train_lbl(train_data='train', dev_data='dev', test_data='test',
                                                            (index+1)*batch_size]
                                           })
 
-    print(x)
+
     # function that computes log-probability of the test set
     logprob_test = theano.function(inputs=[index], outputs=cost,
-                                   givens={x: train_set_x[index*batch_size:
+                                   givens={x: test_set_x[index*batch_size:
                                                              (index+1)*batch_size],
-                                           y: train_set_y[index*batch_size:
+                                           y: test_set_y[index*batch_size:
                                                              (index+1)*batch_size]
                                            })
     
-
-
     # function that returns the cost and updates the parameter 
     train_model = theano.function(inputs=[index], outputs=cost,
                                   updates=updates,
