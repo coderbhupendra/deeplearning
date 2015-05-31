@@ -30,7 +30,8 @@ class NeuralLanguageModel(object):
     def __init__(self, x, Vocal_size, K_feature, hidden_units,context_sz, rng,batch_size):
         """
         Initialize the parameters of the language model
-        x is a of the form 
+ x is a of the form                            :::::               y is of the form 
+                                                                   [   3    6    9 ..., 8208 8211 8214]
 [[  21  995  221]
  [1498  161   17]
  [  22 1211  922]
@@ -86,20 +87,20 @@ class NeuralLanguageModel(object):
         
         
         # context word representations
-        self.r_w =T.reshape(self.look_up[x],(batch_size,(K_feature*context_sz)))
+        self.r_w =T.reshape( self.look_up[x] , (batch_size,(K_feature*context_sz)) )
       
        
         # predicted word representation for target word
-        self.q_hat = T.dot(self.r_w, self.lower_weights.T) +T.reshape(self.d, (hidden_units,1))
+        self.q_hat = T.dot(self.r_w, self.lower_weights.T) +T.reshape(self.d, (1,hidden_units))
         self.q_hat=T.tanh(self.q_hat)
         
         # similarity score between predicted word and all target words
-        self.s =T.dot(self.q_hat,(self.upper_weights.T)) +T.reshape(self.b, (Vocal_size,1))
+        self.s =T.dot(self.q_hat,(self.upper_weights.T)) +T.reshape(self.b, (1,Vocal_size))
         # softmax activation function
         self.p_w_given_h = T.nnet.softmax(self.s) 
         
         # parameters of the model
-        self.params = [self.look_up, self.upper_weights, self.lower_weights, self.b,self.d]
+        self.params = [self.look_up, self.upper_weights, self.lower_weights,self.d,self.b]
         
         
     def negative_log_likelihood(self, y):
@@ -173,13 +174,13 @@ def make_instances(text_tokenized, dictionary, context_sz):
 
     
 def train_nbl(train_data='train', dev_data='dev', test_data='test', 
-              K=5,hidden_units=10, context_sz=3, learning_rate=1.0, 
+              K=5,hidden_units=20, context_sz=3, learning_rate=1.0, 
               rate_update='simple', epochs=10, 
               batch_size=100, rng=None, patience=None, 
               patience_incr=2, improvement_thrs=0.995, 
               validation_freq=1000):
     """
-    Train log-bilinear model
+    Train neural model
     """
    
     
@@ -206,7 +207,7 @@ def train_nbl(train_data='train', dev_data='dev', test_data='test',
     text = nltk.Text(tokens)
     words = [w.lower() for w in tokens]
     train_data=words
-
+    
     vocab_data=sorted(set(words))
     vocab_data.append("oov")
     size=len(vocab_data)
@@ -243,24 +244,24 @@ def train_nbl(train_data='train', dev_data='dev', test_data='test',
     dev_set_x, dev_set_y = make_instances(dev_data, dictionary, context_sz)
     test_set_x, test_set_y = make_instances(test_data, dictionary, context_sz)
    
-    print "train_set_x",(train_set_x.eval())
-    print (type(train_set_x.eval()))
-    print(train_set_x[:100].eval().shape)
-    print "train_set_y",(train_set_y.eval())
-    print (type(train_set_y.eval()))
-    print(train_set_y[:100].eval().shape)
+    print "\n\ntrain_set_x\n",(train_set_x.eval())
+    #print (type(train_set_x.eval()))
+    print "shape of x",(train_set_x.eval().shape)
+    print "\ntrain_set_y\n",(train_set_y.eval())
+    #print (type(train_set_y.eval()))
+    print "shape of y ",(train_set_y.eval().shape)
     n_train_batches = train_set_x.get_value(borrow=True).shape[0] / batch_size
     n_dev_batches = dev_set_x.get_value(borrow=True).shape[0] / batch_size
     n_test_batches = test_set_x.get_value(borrow=True).shape[0] / batch_size
 
     print('no of batches in training data%i'%n_train_batches)
-    print('shape of dataset xrange')
-    print(train_set_x.get_value(borrow=True).shape)
+    #print('shape of dataset xrange')
+    #print(train_set_x.get_value(borrow=True).shape)
     #print(train_set_x.get_value(borrow=True)[0:50])
-    print('shape of dataset y')
-    print(train_set_y.get_value(borrow=True).shape)
+    #print('shape of dataset y')
+    #print(train_set_y.get_value(borrow=True).shape)
     # build the model
-    print("Build the model ...")
+    print("\nBuild the model ...")
  
     index = T.lscalar()
     x = T.imatrix('x')
@@ -321,7 +322,7 @@ def train_nbl(train_data='train', dev_data='dev', test_data='test',
         return np.power(2.0, neg_logp)
 
     # train model
-    print("training model...")
+    print("\ntraining model...")
     best_params = None
     last_epoch_dev_ppl = np.inf
     best_dev_ppl = np.inf
