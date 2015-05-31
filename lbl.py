@@ -161,10 +161,10 @@ def train_lbl(train_data='train', dev_data='dev', test_data='test',
     test_set_x, test_set_y = make_instances(test_data, vocab, context_sz)
     print "train_set_x",(train_set_x.eval())
     print (type(train_set_x.eval()))
-    print(train_set_x[:100].eval().shape)
+    print(train_set_x[:10].eval().shape)
     print "train_set_y",(train_set_y.eval())
     print (type(train_set_y.eval()))
-    print(train_set_y[:100].eval().shape)
+    print(train_set_y[:10].eval().shape)
 
 
     # number of minibatches for training

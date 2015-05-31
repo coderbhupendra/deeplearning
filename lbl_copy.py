@@ -105,7 +105,6 @@ class NeuralLanguageModel(object):
         
     def negative_log_likelihood(self, y):
         # take the logarithm with base 2
-    
         return -T.mean(T.log2(self.p_w_given_h)[T.arange(y.shape[0]), y])
 
 
@@ -120,6 +119,8 @@ def make_instances(text_tokenized, dictionary, context_sz):
         #print "shared x",(shared_x.get_value(borrow=True))
         return shared_x, shared_y
 
+    print(len(text_tokenized))
+    print(len(dictionary))
     data = []
     labels = []   
     token=0     
@@ -146,8 +147,8 @@ def make_instances(text_tokenized, dictionary, context_sz):
             if(text_tokenized[token] in dictionary.keys()): 
                                                 #if i want my yout put word to be in fecture vector form uncomment it , 
                                                 #else y contains number for the prediction context 
-                                                #labels.append(dictionary[text_tokenized[token]])
-                                                labels.append(token)
+                                                labels.append(dictionary[text_tokenized[token]])
+                                                #labels.append(token)
             else:
                                                 #labels.append(dictionary["oov"])
                                                 labels.append(no_tokens)
@@ -200,8 +201,8 @@ def train_nbl(train_data='train', dev_data='dev', test_data='test',
     
 
     """ here i am reading text file and tokenzing it """
-    #edgeworth-parents.txt
-    with open('blake-poems.txt', 'rb') as fin:
+    #large :edgeworth-parents.txt small :blake-poems.txt
+    with open('edgeworth-parents.txt', 'rb') as fin:
         raw = fin.read()
     tokens=word_tokenize(raw)
     text = nltk.Text(tokens)
@@ -221,15 +222,15 @@ def train_nbl(train_data='train', dev_data='dev', test_data='test',
     vocab_dic = zip(vocab_data,no)
     dictionary=dict(vocab_dic)
     #print(dictionary['how'])
-    #'austen-emma.txt'
-    with open('burgess-busterbrown.txt', 'rb') as fin:
+    #large :'austen-emma.txt' small:burgess-busterbrown.txt
+    with open('austen-emma.txt', 'rb') as fin:
         raw_d = fin.read()
     tokens=word_tokenize(raw_d)
     text = nltk.Text(tokens)
     words = [w.lower() for w in tokens]
     dev_data = words
-    #'melville-moby_dick.txt'
-    with open('shakespeare-macbeth.txt', 'rb') as fin:
+    #lareg :'melville-moby_dick.txt' small:shakespeare-macbeth.txt
+    with open('melville-moby_dick.txt', 'rb') as fin:
         raw_t = fin.read()
     tokens=word_tokenize(raw_t)
     text = nltk.Text(tokens)
