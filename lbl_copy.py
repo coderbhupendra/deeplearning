@@ -16,7 +16,7 @@ import logging
 
 
 
-class LogBilinearLanguageModel(object):
+class NeuralLanguageModel(object):
     """
     Log-bilinear language model class
     context are the previous words which we give as input inorder to predict the next word from vocablary
@@ -39,70 +39,67 @@ class LogBilinearLanguageModel(object):
  [1140  227  684]
  [1321 1408  922]]
 
-        R is the look up vocablary matrix which gives feature vector for each word
-        Q is weight matrix for upper layer between hidden layer and output layer 
-        C is the weight matrix between input layer and hidden layer 
-        b is the bias for output layer
-        r_w is the concatenated input for the set of word , i.e if we give 2 words , it will give concatenated feature vector for both words
-        q_hat is the dot product for weight matrix C and input r_w
+        'look_up' is the look up vocablary matrix which gives feature vector for each word
+
+        'upper_weights' is weight matrix for upper layer between hidden layer and output layer 
+        'b' is the bias for output layer
+        
+        'lower_weights' is the weight matrix between input layer and hidden layer 
+        'd' is the bias for hidden layer
+        
+        'r_w' is the concatenated input for the set of word , i.e if we give 2 words , 
+        it will give concatenated feature vector for both words
+        
+        'q_hat' is the dot product for weight matrix 'lower_weights' and input 'r_w'
         then we apply tanh() to it , which becomes the hidden layer
 
-        s is the dot product of weight matrix Q and q_hat
-        p_w_given_h is the softmax on s , i.e p_w_given_h gives the probability for each word in vocablary and its teh final output
+        's' is the dot product of weight matrix 'upper_weights' and 'q_hat'
+        'p_w_given_h' is the softmax on 's' , i.e 'p_w_given_h' gives the probability for each word in vocablary and its teh final output
 
         """
 
        
-        # training contexts
+        # 'x'training contexts
         self.x = x
 
-        #print "vocal size " ,(Vocal_size)
-        # initialize context word embedding matrix R of shape (V, K)
         # TODO: parameterize initialization
-        R_values=np.asarray(rng.uniform(-2, 2, size=(Vocal_size, K_feature)), 
-                              dtype=theano.config.floatX)
+        look_up_matrix=np.asarray(rng.uniform(-2, 2, size=(Vocal_size, K_feature)),dtype=theano.config.floatX)
+        self.look_up = theano.shared(value=look_up_matrix, name='look_up', borrow=True)
 
-        self.R = theano.shared(value=R_values, name='R', borrow=True)
-        # initialize target word embedding matrix Q of shape (V, K)
-        Q_values = np.asarray(rng.uniform(-2, 2, size=(Vocal_size, hidden_units)), 
-                              dtype=theano.config.floatX)
-        self.Q = theano.shared(value=Q_values, name='Q', borrow=True)
-        # initialize weight tensor C of shape (context_sz, K, K)
-        C_values = np.asarray(rng.normal(0, math.sqrt(2), 
-                                         size=(hidden_units,context_sz*K_feature)), 
-                              dtype=theano.config.floatX)
-        self.C = theano.shared(value=C_values, name='C', borrow=True)
         
+         # initialize  matrix 'lower weights' of shape (hidden_units,context_sz*K_feature) and initialize bias vector 'd'
+        l_weights = np.asarray(rng.normal(0, math.sqrt(2),size=(hidden_units,context_sz*K_feature)), dtype=theano.config.floatX)
+        self.lower_weights = theano.shared(value=l_weights, name='lower_weights', borrow=True)
         
-        self.C = theano.shared(value=C_values, name='C', borrow=True)
-
-        # initialize bias vector 
-        b_values = np.asarray(rng.normal(0, math.sqrt(2), size=(Vocal_size,)), 
-                              dtype=theano.config.floatX)
-        self.b = theano.shared(value=b_values, name='b', borrow=True)
-
-        d_values = np.asarray(rng.normal(0, math.sqrt(2), size=(hidden_units,)), 
-                              dtype=theano.config.floatX)
+        d_values = np.asarray(rng.normal(0, math.sqrt(2), size=(hidden_units,)),dtype=theano.config.floatX)
         self.d = theano.shared(value=d_values, name='d', borrow=True)
+
+       
+        
+        # initialize  matrix 'upper weights' of shape (Vocal_size, hidden_units) and initialize bias vector 'b'
+        u_weights = np.asarray(rng.uniform(-2, 2, size=(Vocal_size, hidden_units)),dtype=theano.config.floatX)
+        self.upper_weights = theano.shared(value=u_weights, name='upper_weights', borrow=True)
+         
+        b_values = np.asarray(rng.normal(0, math.sqrt(2), size=(Vocal_size,)),dtype=theano.config.floatX)
+        self.b = theano.shared(value=b_values, name='b', borrow=True)
+        
+        
         
         # context word representations
-        
-        
-        
-        self.r_w =T.reshape(self.R[x],(batch_size,(K_feature*context_sz)))
+        self.r_w =T.reshape(self.look_up[x],(batch_size,(K_feature*context_sz)))
       
-        #self.r_w=matrix_input
+       
         # predicted word representation for target word
-        self.q_hat = T.dot(self.r_w, self.C.T) +T.reshape(self.d, (hidden_units,1))
+        self.q_hat = T.dot(self.r_w, self.lower_weights.T) +T.reshape(self.d, (hidden_units,1))
         self.q_hat=T.tanh(self.q_hat)
         
         # similarity score between predicted word and all target words
-        self.s =T.dot(self.q_hat,(self.Q.T)) +T.reshape(self.b, (Vocal_size,1))
+        self.s =T.dot(self.q_hat,(self.upper_weights.T)) +T.reshape(self.b, (Vocal_size,1))
         # softmax activation function
         self.p_w_given_h = T.nnet.softmax(self.s) 
         
         # parameters of the model
-        self.params = [self.R, self.Q, self.C, self.b,self.d]
+        self.params = [self.look_up, self.upper_weights, self.lower_weights, self.b,self.d]
         
         
     def negative_log_likelihood(self, y):
@@ -175,7 +172,7 @@ def make_instances(text_tokenized, dictionary, context_sz):
     
 
     
-def train_lbl(train_data='train', dev_data='dev', test_data='test', 
+def train_nbl(train_data='train', dev_data='dev', test_data='test', 
               K=5,hidden_units=10, context_sz=3, learning_rate=1.0, 
               rate_update='simple', epochs=10, 
               batch_size=100, rng=None, patience=None, 
@@ -271,19 +268,19 @@ def train_lbl(train_data='train', dev_data='dev', test_data='test',
     # create log-bilinear model
     # size is the size of vocab dict 
     
-    lbl = LogBilinearLanguageModel(x, size, K,hidden_units, context_sz, rng,batch_size)
+    nbl = NeuralLanguageModel(x, size, K,hidden_units, context_sz, rng,batch_size)
     
     # cost function is negative log likelihood of the training data
-    cost = lbl.negative_log_likelihood(y)
+    cost = nbl.negative_log_likelihood(y)
     # compute the gradient
     gparams = []
-    for param in lbl.params:
+    for param in nbl.params:
         gparam = T.grad(cost, param)
         gparams.append(gparam)
 
     # specify how to update the parameter of the model
     updates = []
-    for param, gparam in zip(lbl.params, gparams):
+    for param, gparam in zip(nbl.params, gparams):
         updates.append((param, param-learning_rate*gparam))
 
     # function that computes log-probability of the dev set
@@ -395,11 +392,11 @@ def train_lbl(train_data='train', dev_data='dev', test_data='test',
                 (total_time/60/60/24, total_time/60/60%24, total_time/60%60, total_time%60))
     # return 
 
-    return lbl
+    return nbl
 
     
 if __name__ == '__main__':
-    train_lbl()
+    train_nbl()
     
 
    
