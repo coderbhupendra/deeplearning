@@ -103,9 +103,14 @@ def make_instances(corpus, vocab, context_sz, start_symb='<s>', end_symb='</s>')
         sentence = [start_symb] * context_sz + sentence + [end_symb] * context_sz
         sentence = vocab.doc_words_to_ids(sentence, update_dict=False)
         for instance in zip(*(sentence[i:] for i in xrange(context_sz+1))):
-            data.append(instance[:-
-                1])
+            data.append(instance[:-1])
             labels.append(instance[-1])
+    print "data",(data[1:100])
+    print (type(data))
+    print(np.asarray(data).shape)
+    print "labels",(labels[1:10])
+    print(type(labels))
+    print(np.asarray(labels).shape)        
     train_set_x, train_set_y = shared_dataset([data, labels])
     return train_set_x, train_set_y
 
@@ -129,6 +134,7 @@ def train_lbl(train_data='train', dev_data='dev', test_data='test',
     V = vocab.size()
 
 # create random number generator
+
     #rng = np.random.RandomState(123)
 
     # initialize random generator if not provided
@@ -139,7 +145,9 @@ def train_lbl(train_data='train', dev_data='dev', test_data='test',
     print("Load data ...")
     
     with open('train' , 'rb') as fin:
-        train_data = [line.split() for line in fin.readlines() if line.strip()]    
+        train_data = [line.split() for line in fin.readlines() if line.strip()]  
+        print "train_data ",(np.array(train_data).shape)
+        print(type(train_data))
     with open('dev', 'rb') as fin:
         dev_data = [line.split() for line in fin.readlines() if line.strip()]
     
@@ -151,7 +159,9 @@ def train_lbl(train_data='train', dev_data='dev', test_data='test',
     train_set_x, train_set_y = make_instances(train_data, vocab, context_sz)
     dev_set_x, dev_set_y = make_instances(dev_data, vocab, context_sz)
     test_set_x, test_set_y = make_instances(test_data, vocab, context_sz)
-    
+    print "train_set_x",(train_set_x.eval)
+    print (type(train_set_x))
+    print(train_set_x.shape)
 
     # number of minibatches for training
     n_train_batches = train_set_x.get_value(borrow=True).shape[0] / batch_size

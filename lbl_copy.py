@@ -4,8 +4,6 @@ from dataset import Dictionary, load_corpus
 import nltk, re, pprint,urllib2
 from nltk import word_tokenize
 
-from theano import config
-config.compute_test_value = 'off'
 
 import cPickle
 import numpy as np
@@ -29,7 +27,7 @@ class LogBilinearLanguageModel(object):
     """
 
 
-    def __init__(self, x, Vocal_size, K_feature, hidden_units,context_sz, rng):
+    def __init__(self, x, Vocal_size, K_feature, hidden_units,context_sz, rng,batch_size):
         """
         Initialize the parameters of the language model
         x is a of the form 
@@ -83,32 +81,41 @@ class LogBilinearLanguageModel(object):
         b_values = np.asarray(rng.normal(0, math.sqrt(2), size=(Vocal_size,)), 
                               dtype=theano.config.floatX)
         self.b = theano.shared(value=b_values, name='b', borrow=True)
+
+        d_values = np.asarray(rng.normal(0, math.sqrt(2), size=(hidden_units,)), 
+                              dtype=theano.config.floatX)
+        self.d = theano.shared(value=d_values, name='d', borrow=True)
         
         # context word representations
-        """
-        x=x.flatten()
-        flat_vector=T.fmatrix()
-        for i in range(100):
+        
+        
+        """x=x.flatten()
+        matrix_input=T.fmatrix()
+        flat_vector=[]
+        for i in range(batch_size*K_feature*context_sz):
             flat_vector.append( self.R[ x[i] ] )
-        #matrix_input=T.reshape(flat_vector,())     
-        print(flat_vector)
-
-        self.r_w = self.R[x]
+        matrix_input=T.reshape(flat_vector,(batch_size,(K_feature*context_sz)))     
+        print" shape" ,(np.asarray(flat_vector).shape)
         """
+        self.r_w =T.reshape(self.R[x],(batch_size,(K_feature*context_sz)))
+      
+        #self.r_w=matrix_input
         # predicted word representation for target word
-        self.q_hat = T.dot(self.x, self.C.T)
+        self.q_hat = T.dot(self.r_w, self.C.T) +T.reshape(self.d, (hidden_units,1))
         self.q_hat=T.tanh(self.q_hat)
+        
         # similarity score between predicted word and all target words
         self.s =T.dot(self.q_hat,(self.Q.T)) +T.reshape(self.b, (Vocal_size,1))
         # softmax activation function
         self.p_w_given_h = T.nnet.softmax(self.s) 
+        
         # parameters of the model
-        self.params = [self.R, self.Q, self.C, self.b]
-        print(self.s)
+        self.params = [self.R, self.Q, self.C, self.b,self.d]
+        
         
     def negative_log_likelihood(self, y):
         # take the logarithm with base 2
-        
+        print"dff"
         return -T.mean(T.log2(self.p_w_given_h)[T.arange(y.shape[0]), y])
 
 
@@ -117,9 +124,9 @@ def make_instances(text_tokenized, dictionary, context_sz):
     def shared_dataset(data_xy, borrow=True):
         data_x, data_y = data_xy
 
-        print "datax\n",(data_x)
+       # print "datax\n",(data_x)
         shared_x = theano.shared(value=np.asarray(data_x, dtype=theano.config.floatX), borrow=borrow)
-        shared_y = theano.shared(value=np.asarray(data_y, dtype=np.int32), borrow=borrow)
+        shared_y = theano.shared(value=np.asarray(data_y, dtype=np.int64), borrow=borrow)
         #print "shared x",(shared_x.get_value(borrow=True))
         return shared_x, shared_y
 
@@ -268,7 +275,7 @@ def train_lbl(train_data='train', dev_data='dev', test_data='test',
     # create log-bilinear model
     # size is the size of vocab dict 
     
-    lbl = LogBilinearLanguageModel(x, size, K,hidden_units, context_sz, rng)
+    lbl = LogBilinearLanguageModel(x, size, K,hidden_units, context_sz, rng,batch_size)
     
     # cost function is negative log likelihood of the training data
     cost = lbl.negative_log_likelihood(y)
