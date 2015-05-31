@@ -105,7 +105,7 @@ def make_instances(corpus, vocab, context_sz, start_symb='<s>', end_symb='</s>')
         for instance in zip(*(sentence[i:] for i in xrange(context_sz+1))):
             data.append(instance[:-1])
             labels.append(instance[-1])
-    print "data",(data[1:100])
+    print "data",(data[1:10])
     print (type(data))
     print(np.asarray(data).shape)
     print "labels",(labels[1:10])
@@ -159,9 +159,13 @@ def train_lbl(train_data='train', dev_data='dev', test_data='test',
     train_set_x, train_set_y = make_instances(train_data, vocab, context_sz)
     dev_set_x, dev_set_y = make_instances(dev_data, vocab, context_sz)
     test_set_x, test_set_y = make_instances(test_data, vocab, context_sz)
-    print "train_set_x",(train_set_x.eval)
-    print (type(train_set_x))
-    print(train_set_x.shape)
+    print "train_set_x",(train_set_x.eval())
+    print (type(train_set_x.eval()))
+    print(train_set_x[:100].eval().shape)
+    print "train_set_y",(train_set_y.eval())
+    print (type(train_set_y.eval()))
+    print(train_set_y[:100].eval().shape)
+
 
     # number of minibatches for training
     n_train_batches = train_set_x.get_value(borrow=True).shape[0] / batch_size

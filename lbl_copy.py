@@ -55,7 +55,6 @@ class LogBilinearLanguageModel(object):
        
         # training contexts
         self.x = x
-        print" x val",(type(x))
 
         #print "vocal size " ,(Vocal_size)
         # initialize context word embedding matrix R of shape (V, K)
@@ -89,14 +88,7 @@ class LogBilinearLanguageModel(object):
         # context word representations
         
         
-        """x=x.flatten()
-        matrix_input=T.fmatrix()
-        flat_vector=[]
-        for i in range(batch_size*K_feature*context_sz):
-            flat_vector.append( self.R[ x[i] ] )
-        matrix_input=T.reshape(flat_vector,(batch_size,(K_feature*context_sz)))     
-        print" shape" ,(np.asarray(flat_vector).shape)
-        """
+        
         self.r_w =T.reshape(self.R[x],(batch_size,(K_feature*context_sz)))
       
         #self.r_w=matrix_input
@@ -115,7 +107,7 @@ class LogBilinearLanguageModel(object):
         
     def negative_log_likelihood(self, y):
         # take the logarithm with base 2
-        print"dff"
+    
         return -T.mean(T.log2(self.p_w_given_h)[T.arange(y.shape[0]), y])
 
 
@@ -125,8 +117,8 @@ def make_instances(text_tokenized, dictionary, context_sz):
         data_x, data_y = data_xy
 
        # print "datax\n",(data_x)
-        shared_x = theano.shared(value=np.asarray(data_x, dtype=theano.config.floatX), borrow=borrow)
-        shared_y = theano.shared(value=np.asarray(data_y, dtype=np.int64), borrow=borrow)
+        shared_x = theano.shared(value=np.asarray(data_x, dtype=np.int32), borrow=borrow)
+        shared_y = theano.shared(value=np.asarray(data_y, dtype=np.int32), borrow=borrow)
         #print "shared x",(shared_x.get_value(borrow=True))
         return shared_x, shared_y
 
@@ -253,9 +245,13 @@ def train_lbl(train_data='train', dev_data='dev', test_data='test',
     train_set_x, train_set_y = make_instances(train_data, dictionary, context_sz)
     dev_set_x, dev_set_y = make_instances(dev_data, dictionary, context_sz)
     test_set_x, test_set_y = make_instances(test_data, dictionary, context_sz)
-    #print(train_set_x.eval())    
-    print "train x type " ,(type(train_set_x))
-    # number of minibatches for training
+   
+    print "train_set_x",(train_set_x.eval())
+    print (type(train_set_x.eval()))
+    print(train_set_x[:100].eval().shape)
+    print "train_set_y",(train_set_y.eval())
+    print (type(train_set_y.eval()))
+    print(train_set_y[:100].eval().shape)
     n_train_batches = train_set_x.get_value(borrow=True).shape[0] / batch_size
     n_dev_batches = dev_set_x.get_value(borrow=True).shape[0] / batch_size
     n_test_batches = test_set_x.get_value(borrow=True).shape[0] / batch_size
@@ -291,14 +287,8 @@ def train_lbl(train_data='train', dev_data='dev', test_data='test',
         updates.append((param, param-learning_rate*gparam))
 
     # function that computes log-probability of the dev set
-    logprob_dev = theano.function(inputs=[index], outputs=cost,
-                                  givens={x: dev_set_x[index*batch_size:
-                                                           (index+1)*batch_size],
-                                          y: dev_set_y[index*batch_size:
-                                                           (index+1)*batch_size]
-                                          })
+    
 
-    print(x)
     # function that computes log-probability of the test set
     logprob_test = theano.function(inputs=[index], outputs=cost,
                                    givens={x: train_set_x[index*batch_size:
@@ -307,7 +297,12 @@ def train_lbl(train_data='train', dev_data='dev', test_data='test',
                                                              (index+1)*batch_size]
                                            })
     
-
+    logprob_dev = theano.function(inputs=[index], outputs=cost,
+                                  givens={x: dev_set_x[index*batch_size:
+                                                           (index+1)*batch_size],
+                                          y: dev_set_y[index*batch_size:
+                                                           (index+1)*batch_size]
+                                          })
 
     # function that returns the cost and updates the parameter 
     train_model = theano.function(inputs=[index], outputs=cost,
