@@ -177,11 +177,11 @@ def make_instances(text_tokenized, dictionary, context_sz):
 
     
 def train_nbl(train_data='train', dev_data='dev', test_data='test', 
-              K=5,hidden_units=10, context_sz=3, learning_rate=1.0, 
+              K=5,hidden_units=20, context_sz=3, learning_rate=1.0, 
               rate_update='simple', epochs=10, 
               batch_size=100, rng=None, patience=None, 
               patience_incr=2, improvement_thrs=0.995, 
-              validation_freq=200):
+              validation_freq=500):
     """
     Train neural model
     """
