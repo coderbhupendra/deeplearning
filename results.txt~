@@ -1,0 +1,291 @@
+Load data ...
+size of vocab dictionary 22477
+size of training data 244971
+244971
+22477
+183027
+22477
+244971
+22477
+
+
+train_set_x
+[[  591 12694  5710]
+ [ 3174  9436 12415]
+ [  470   592  6870]
+ ..., 
+ [ 9400 16220 17058]
+ [  923  9400 12653]
+ [ 3749   114 13647]]
+shape of x (81656, 3)
+
+train_set_y
+[3174  470  111 ...,  923 3749 8017]
+shape of y  (81656,)
+no of batches in training data816
+
+Build the model ...
+
+training model...
+epoch 0
+epoch 0, minibatch 1/816, train minibatch log prob 28.9268 ppl 510297038.6960
+epoch 0, minibatch 2/816, train minibatch log prob 29.3876 ppl 702357675.2878
+epoch 0, minibatch 3/816, train minibatch log prob 29.7158 ppl 881758162.0922
+epoch 0, minibatch 4/816, train minibatch log prob 29.7032 ppl 874067147.2219
+epoch 0, minibatch 5/816, train minibatch log prob 30.5235 ppl 1543397370.5252
+epoch 0, minibatch 6/816, train minibatch log prob 29.7897 ppl 928093934.6172
+epoch 0, minibatch 7/816, train minibatch log prob 29.8013 ppl 935599828.4394
+epoch 0, minibatch 8/816, train minibatch log prob 29.6605 ppl 848589765.9741
+epoch 0, minibatch 9/816, train minibatch log prob 29.6092 ppl 818957721.3287
+epoch 0, minibatch 10/816, train minibatch log prob 29.4927 ppl 755409050.6529
+epoch 0, minibatch 11/816, train minibatch log prob 28.8258 ppl 475810960.2948
+epoch 0, minibatch 12/816, train minibatch log prob 28.5250 ppl 386255752.7460
+epoch 0, minibatch 13/816, train minibatch log prob 27.8164 ppl 236351566.3078
+epoch 0, minibatch 14/816, train minibatch log prob 28.0104 ppl 270383750.4290
+epoch 0, minibatch 15/816, train minibatch log prob 29.4149 ppl 715756673.4749
+epoch 0, minibatch 16/816, train minibatch log prob 28.1570 ppl 299301329.6885
+epoch 0, minibatch 17/816, train minibatch log prob 29.2263 ppl 628060581.3326
+epoch 0, minibatch 18/816, train minibatch log prob 28.6028 ppl 407663511.6971
+epoch 0, minibatch 19/816, train minibatch log prob 27.3789 ppl 174528056.3125
+epoch 0, minibatch 20/816, train minibatch log prob 26.2198 ppl 78151267.6532
+epoch 0, minibatch 21/816, train minibatch log prob 27.2885 ppl 163931137.5599
+epoch 0, minibatch 22/816, train minibatch log prob 27.2126 ppl 155523910.2631
+epoch 0, minibatch 23/816, train minibatch log prob 27.8075 ppl 234910545.4140
+epoch 0, minibatch 24/816, train minibatch log prob 26.6436 ppl 104842464.5020
+epoch 0, minibatch 25/816, train minibatch log prob 25.5254 ppl 48296422.6226
+epoch 0, minibatch 26/816, train minibatch log prob 27.1205 ppl 145906170.0715
+epoch 0, minibatch 27/816, train minibatch log prob 26.5093 ppl 95518947.6756
+epoch 0, minibatch 28/816, train minibatch log prob 27.4718 ppl 186133016.9496
+epoch 0, minibatch 29/816, train minibatch log prob 28.0626 ppl 280333581.4258
+epoch 0, minibatch 30/816, train minibatch log prob 27.9575 ppl 260642866.3029
+epoch 0, minibatch 31/816, train minibatch log prob 26.6118 ppl 102552653.9088
+epoch 0, minibatch 32/816, train minibatch log prob 26.9600 ppl 130547972.3864
+epoch 0, minibatch 33/816, train minibatch log prob 24.4964 ppl 23667378.8522
+epoch 0, minibatch 34/816, train minibatch log prob 22.8524 ppl 7572638.0647
+epoch 0, minibatch 35/816, train minibatch log prob 26.2320 ppl 78814704.2550
+epoch 0, minibatch 36/816, train minibatch log prob 26.6682 ppl 106641243.7642
+epoch 0, minibatch 37/816, train minibatch log prob 26.4388 ppl 90963169.5202
+epoch 0, minibatch 38/816, train minibatch log prob 26.3687 ppl 86650576.3679
+epoch 0, minibatch 39/816, train minibatch log prob 23.6995 ppl 13622756.3260
+epoch 0, minibatch 40/816, train minibatch log prob 22.6080 ppl 6392895.4110
+epoch 0, minibatch 41/816, train minibatch log prob 24.8330 ppl 29885849.2451
+epoch 0, minibatch 42/816, train minibatch log prob 24.1380 ppl 18460651.7356
+epoch 0, minibatch 43/816, train minibatch log prob 24.7938 ppl 29086429.7389
+epoch 0, minibatch 44/816, train minibatch log prob 24.9554 ppl 32532218.6679
+epoch 0, minibatch 45/816, train minibatch log prob 23.5434 ppl 12225318.5593
+epoch 0, minibatch 46/816, train minibatch log prob 23.8899 ppl 15544221.0767
+epoch 0, minibatch 47/816, train minibatch log prob 25.1236 ppl 36555387.2947
+epoch 0, minibatch 48/816, train minibatch log prob 21.8958 ppl 3902117.4711
+epoch 0, minibatch 49/816, train minibatch log prob 22.1888 ppl 4780688.5512
+epoch 0, minibatch 50/816, train minibatch log prob 22.2887 ppl 5123502.7931
+epoch 0, minibatch 51/816, train minibatch log prob 24.9308 ppl 31983330.9940
+epoch 0, minibatch 52/816, train minibatch log prob 22.3914 ppl 5501679.3506
+epoch 0, minibatch 53/816, train minibatch log prob 23.2390 ppl 9899682.0865
+epoch 0, minibatch 54/816, train minibatch log prob 22.4353 ppl 5671447.4313
+epoch 0, minibatch 55/816, train minibatch log prob 21.8674 ppl 3826084.8000
+epoch 0, minibatch 56/816, train minibatch log prob 20.2103 ppl 1213128.0275
+epoch 0, minibatch 57/816, train minibatch log prob 24.5848 ppl 25163254.6820
+epoch 0, minibatch 58/816, train minibatch log prob 22.1158 ppl 4544847.0224
+epoch 0, minibatch 59/816, train minibatch log prob 23.1355 ppl 9214887.2495
+epoch 0, minibatch 60/816, train minibatch log prob 23.5009 ppl 11870620.0809
+epoch 0, minibatch 61/816, train minibatch log prob 22.5687 ppl 6220830.9620
+epoch 0, minibatch 62/816, train minibatch log prob 22.2834 ppl 5104637.1750
+epoch 0, minibatch 63/816, train minibatch log prob 23.2306 ppl 9842884.2800
+epoch 0, minibatch 64/816, train minibatch log prob 23.9224 ppl 15898277.1380
+epoch 0, minibatch 65/816, train minibatch log prob 24.5171 ppl 24009123.2029
+epoch 0, minibatch 66/816, train minibatch log prob 22.7186 ppl 6902148.0023
+epoch 0, minibatch 67/816, train minibatch log prob 20.9246 ppl 1990344.4358
+epoch 0, minibatch 68/816, train minibatch log prob 20.9315 ppl 1999848.9845
+epoch 0, minibatch 69/816, train minibatch log prob 20.7958 ppl 1820351.3779
+epoch 0, minibatch 70/816, train minibatch log prob 21.4827 ppl 2930442.6532
+epoch 0, minibatch 71/816, train minibatch log prob 20.9823 ppl 2071578.5966
+epoch 0, minibatch 72/816, train minibatch log prob 21.4418 ppl 2848495.0124
+epoch 0, minibatch 73/816, train minibatch log prob 21.0793 ppl 2215695.1443
+epoch 0, minibatch 74/816, train minibatch log prob 23.3940 ppl 11022941.6619
+epoch 0, minibatch 75/816, train minibatch log prob 20.5587 ppl 1544476.4630
+epoch 0, minibatch 76/816, train minibatch log prob 19.2080 ppl 605601.8450
+epoch 0, minibatch 77/816, train minibatch log prob 24.6104 ppl 25613970.7972
+epoch 0, minibatch 78/816, train minibatch log prob 23.2633 ppl 10068184.4753
+epoch 0, minibatch 79/816, train minibatch log prob 20.7264 ppl 1734878.5714
+epoch 0, minibatch 80/816, train minibatch log prob 19.5914 ppl 789967.1214
+epoch 0, minibatch 81/816, train minibatch log prob 20.4750 ppl 1457467.8798
+epoch 0, minibatch 82/816, train minibatch log prob 20.2902 ppl 1282180.5220
+epoch 0, minibatch 83/816, train minibatch log prob 21.1112 ppl 2265211.8850
+epoch 0, minibatch 84/816, train minibatch log prob 20.7242 ppl 1732214.6670
+epoch 0, minibatch 85/816, train minibatch log prob 19.0415 ppl 539596.6478
+epoch 0, minibatch 86/816, train minibatch log prob 20.9274 ppl 1994286.2592
+epoch 0, minibatch 87/816, train minibatch log prob 18.7053 ppl 427424.7379
+epoch 0, minibatch 88/816, train minibatch log prob 18.4835 ppl 366504.2504
+epoch 0, minibatch 89/816, train minibatch log prob 20.2799 ppl 1273096.5661
+epoch 0, minibatch 90/816, train minibatch log prob 21.0071 ppl 2107465.5747
+epoch 0, minibatch 91/816, train minibatch log prob 18.8790 ppl 482098.9438
+epoch 0, minibatch 92/816, train minibatch log prob 18.6908 ppl 423145.9455
+epoch 0, minibatch 93/816, train minibatch log prob 19.5308 ppl 757456.4770
+epoch 0, minibatch 94/816, train minibatch log prob 18.6076 ppl 399438.0653
+epoch 0, minibatch 95/816, train minibatch log prob 20.9166 ppl 1979336.3293
+epoch 0, minibatch 96/816, train minibatch log prob 19.5256 ppl 754739.1766
+epoch 0, minibatch 97/816, train minibatch log prob 19.8248 ppl 928686.5482
+epoch 0, minibatch 98/816, train minibatch log prob 21.4176 ppl 2801259.7630
+epoch 0, minibatch 99/816, train minibatch log prob 18.3935 ppl 344342.6838
+epoch 0, minibatch 100/816, train minibatch log prob 18.9929 ppl 521730.4321
+epoch 0, minibatch 101/816, train minibatch log prob 18.8640 ppl 477124.9293
+epoch 0, minibatch 102/816, train minibatch log prob 19.7825 ppl 901859.5968
+epoch 0, minibatch 103/816, train minibatch log prob 18.9747 ppl 515182.0690
+epoch 0, minibatch 104/816, train minibatch log prob 19.2130 ppl 607709.9038
+epoch 0, minibatch 105/816, train minibatch log prob 18.6696 ppl 416966.9586
+epoch 0, minibatch 106/816, train minibatch log prob 16.3898 ppl 85863.7853
+epoch 0, minibatch 107/816, train minibatch log prob 19.7038 ppl 853956.6678
+epoch 0, minibatch 108/816, train minibatch log prob 18.3693 ppl 338629.6268
+epoch 0, minibatch 109/816, train minibatch log prob 19.7769 ppl 898358.8318
+epoch 0, minibatch 110/816, train minibatch log prob 18.1084 ppl 282608.5962
+epoch 0, minibatch 111/816, train minibatch log prob 19.1044 ppl 563623.2957
+epoch 0, minibatch 112/816, train minibatch log prob 18.9175 ppl 495142.7716
+epoch 0, minibatch 113/816, train minibatch log prob 18.7567 ppl 442932.1039
+epoch 0, minibatch 114/816, train minibatch log prob 18.9482 ppl 505804.3846
+epoch 0, minibatch 115/816, train minibatch log prob 17.0330 ppl 134106.9572
+epoch 0, minibatch 116/816, train minibatch log prob 18.5270 ppl 377718.5654
+epoch 0, minibatch 117/816, train minibatch log prob 18.0564 ppl 272590.6810
+epoch 0, minibatch 118/816, train minibatch log prob 20.2032 ppl 1207136.6311
+epoch 0, minibatch 119/816, train minibatch log prob 15.9484 ppl 63231.5020
+epoch 0, minibatch 120/816, train minibatch log prob 16.7188 ppl 107859.1185
+epoch 0, minibatch 121/816, train minibatch log prob 17.1121 ppl 141659.1857
+epoch 0, minibatch 122/816, train minibatch log prob 17.2666 ppl 157678.2326
+epoch 0, minibatch 123/816, train minibatch log prob 18.0339 ppl 268371.9849
+epoch 0, minibatch 124/816, train minibatch log prob 17.6948 ppl 212165.7631
+epoch 0, minibatch 125/816, train minibatch log prob 16.0843 ppl 69478.0731
+epoch 0, minibatch 126/816, train minibatch log prob 15.9117 ppl 61644.8612
+epoch 0, minibatch 127/816, train minibatch log prob 17.1036 ppl 140827.9133
+epoch 0, minibatch 128/816, train minibatch log prob 17.4986 ppl 185181.8990
+epoch 0, minibatch 129/816, train minibatch log prob 15.0959 ppl 35020.2772
+epoch 0, minibatch 130/816, train minibatch log prob 17.6798 ppl 209969.0208
+epoch 0, minibatch 131/816, train minibatch log prob 17.2422 ppl 155035.2210
+epoch 0, minibatch 132/816, train minibatch log prob 15.7202 ppl 53981.6564
+epoch 0, minibatch 133/816, train minibatch log prob 16.8942 ppl 121804.5632
+epoch 0, minibatch 134/816, train minibatch log prob 15.9165 ppl 61851.9568
+epoch 0, minibatch 135/816, train minibatch log prob 18.0941 ppl 279814.6206
+epoch 0, minibatch 136/816, train minibatch log prob 16.1325 ppl 71838.3228
+epoch 0, minibatch 137/816, train minibatch log prob 17.5069 ppl 186252.7452
+epoch 0, minibatch 138/816, train minibatch log prob 14.9667 ppl 32019.5200
+epoch 0, minibatch 139/816, train minibatch log prob 15.1582 ppl 36566.3561
+epoch 0, minibatch 140/816, train minibatch log prob 17.6501 ppl 205685.2992
+epoch 0, minibatch 141/816, train minibatch log prob 16.7147 ppl 107555.8647
+epoch 0, minibatch 142/816, train minibatch log prob 16.7353 ppl 109100.6594
+epoch 0, minibatch 143/816, train minibatch log prob 16.6359 ppl 101835.3761
+epoch 0, minibatch 144/816, train minibatch log prob 16.6226 ppl 100903.2419
+epoch 0, minibatch 145/816, train minibatch log prob 16.7207 ppl 107998.9749
+epoch 0, minibatch 146/816, train minibatch log prob 18.0897 ppl 278966.1629
+epoch 0, minibatch 147/816, train minibatch log prob 14.3984 ppl 21594.9214
+epoch 0, minibatch 148/816, train minibatch log prob 15.6316 ppl 50766.2306
+epoch 0, minibatch 149/816, train minibatch log prob 16.6590 ppl 103479.5241
+epoch 0, minibatch 150/816, train minibatch log prob 17.2367 ppl 154436.4419
+epoch 0, minibatch 151/816, train minibatch log prob 17.5337 ppl 189742.3721
+epoch 0, minibatch 152/816, train minibatch log prob 14.3781 ppl 21293.8528
+epoch 0, minibatch 153/816, train minibatch log prob 15.5478 ppl 47902.4968
+epoch 0, minibatch 154/816, train minibatch log prob 16.3893 ppl 85838.5453
+epoch 0, minibatch 155/816, train minibatch log prob 14.6996 ppl 26608.6330
+epoch 0, minibatch 156/816, train minibatch log prob 16.9325 ppl 125076.7000
+epoch 0, minibatch 157/816, train minibatch log prob 17.2292 ppl 153637.0500
+epoch 0, minibatch 158/816, train minibatch log prob 15.2266 ppl 38340.4541
+epoch 0, minibatch 159/816, train minibatch log prob 14.9465 ppl 31574.2173
+epoch 0, minibatch 160/816, train minibatch log prob 17.6235 ppl 201924.0444
+epoch 0, minibatch 161/816, train minibatch log prob 18.0606 ppl 273387.4415
+epoch 0, minibatch 162/816, train minibatch log prob 15.6384 ppl 51007.8917
+epoch 0, minibatch 163/816, train minibatch log prob 17.6458 ppl 205069.4815
+epoch 0, minibatch 164/816, train minibatch log prob 17.7504 ppl 220504.4574
+epoch 0, minibatch 165/816, train minibatch log prob 17.1354 ppl 143966.6812
+epoch 0, minibatch 166/816, train minibatch log prob 17.0292 ppl 133754.7286
+epoch 0, minibatch 167/816, train minibatch log prob 17.6381 ppl 203986.2726
+epoch 0, minibatch 168/816, train minibatch log prob 15.9648 ppl 63954.4654
+epoch 0, minibatch 169/816, train minibatch log prob 16.6758 ppl 104692.6957
+epoch 0, minibatch 170/816, train minibatch log prob 15.0461 ppl 33831.2375
+epoch 0, minibatch 171/816, train minibatch log prob 15.0379 ppl 33640.5511
+epoch 0, minibatch 172/816, train minibatch log prob 16.3439 ppl 83175.5638
+epoch 0, minibatch 173/816, train minibatch log prob 16.7285 ppl 108584.4042
+epoch 0, minibatch 174/816, train minibatch log prob 13.3371 ppl 10348.2010
+epoch 0, minibatch 175/816, train minibatch log prob 15.8156 ppl 57674.0203
+epoch 0, minibatch 176/816, train minibatch log prob 15.8731 ppl 60015.6874
+epoch 0, minibatch 177/816, train minibatch log prob 15.9435 ppl 63017.1567
+epoch 0, minibatch 178/816, train minibatch log prob 13.2134 ppl 9497.7153
+epoch 0, minibatch 179/816, train minibatch log prob 16.2922 ppl 80249.9925
+epoch 0, minibatch 180/816, train minibatch log prob 16.2515 ppl 78015.2781
+epoch 0, minibatch 181/816, train minibatch log prob 14.3195 ppl 20446.2426
+epoch 0, minibatch 182/816, train minibatch log prob 15.2181 ppl 38116.1512
+epoch 0, minibatch 183/816, train minibatch log prob 15.1683 ppl 36822.7056
+epoch 0, minibatch 184/816, train minibatch log prob 16.0566 ppl 68157.4721
+epoch 0, minibatch 185/816, train minibatch log prob 16.7887 ppl 113214.5160
+epoch 0, minibatch 186/816, train minibatch log prob 17.0322 ppl 134030.9397
+epoch 0, minibatch 187/816, train minibatch log prob 14.5553 ppl 24076.1508
+epoch 0, minibatch 188/816, train minibatch log prob 17.0462 ppl 135337.6609
+epoch 0, minibatch 189/816, train minibatch log prob 13.5299 ppl 11827.9051
+epoch 0, minibatch 190/816, train minibatch log prob 14.8052 ppl 28628.6827
+epoch 0, minibatch 191/816, train minibatch log prob 13.9575 ppl 15908.5077
+epoch 0, minibatch 192/816, train minibatch log prob 14.3494 ppl 20873.4030
+epoch 0, minibatch 193/816, train minibatch log prob 16.4281 ppl 88178.4954
+epoch 0, minibatch 194/816, train minibatch log prob 17.2899 ppl 160241.5828
+epoch 0, minibatch 195/816, train minibatch log prob 14.3421 ppl 20768.4197
+epoch 0, minibatch 196/816, train minibatch log prob 15.1587 ppl 36578.0327
+epoch 0, minibatch 197/816, train minibatch log prob 13.6452 ppl 12812.2384
+epoch 0, minibatch 198/816, train minibatch log prob 15.0252 ppl 33345.0657
+epoch 0, minibatch 199/816, train minibatch log prob 14.7513 ppl 27579.2921
+epoch 0, minibatch 200/816, train minibatch log prob 15.3586 ppl 42013.2004
+epoch 0, minibatch 201/816, train minibatch log prob 15.8820 ppl 60387.6377
+epoch 0, minibatch 202/816, train minibatch log prob 16.0831 ppl 69421.4144
+epoch 0, minibatch 203/816, train minibatch log prob 14.8033 ppl 28590.9562
+epoch 0, minibatch 204/816, train minibatch log prob 14.3456 ppl 20818.7785
+epoch 0, minibatch 205/816, train minibatch log prob 15.1517 ppl 36402.0573
+epoch 0, minibatch 206/816, train minibatch log prob 14.9753 ppl 32211.6238
+epoch 0, minibatch 207/816, train minibatch log prob 14.2768 ppl 19849.4738
+epoch 0, minibatch 208/816, train minibatch log prob 13.5321 ppl 11846.2588
+epoch 0, minibatch 209/816, train minibatch log prob 15.6999 ppl 53229.6319
+epoch 0, minibatch 210/816, train minibatch log prob 16.0374 ppl 67257.0924
+epoch 0, minibatch 211/816, train minibatch log prob 14.7126 ppl 26848.4354
+epoch 0, minibatch 212/816, train minibatch log prob 15.6909 ppl 52898.5039
+epoch 0, minibatch 213/816, train minibatch log prob 15.9494 ppl 63279.4292
+epoch 0, minibatch 214/816, train minibatch log prob 17.0435 ppl 135082.0735
+epoch 0, minibatch 215/816, train minibatch log prob 14.9744 ppl 32191.7702
+epoch 0, minibatch 216/816, train minibatch log prob 15.5647 ppl 48465.8726
+epoch 0, minibatch 217/816, train minibatch log prob 14.0859 ppl 17388.8106
+epoch 0, minibatch 218/816, train minibatch log prob 15.1991 ppl 37617.7737
+epoch 0, minibatch 219/816, train minibatch log prob 14.3447 ppl 20805.4935
+epoch 0, minibatch 220/816, train minibatch log prob 15.0795 ppl 34623.6287
+epoch 0, minibatch 221/816, train minibatch log prob 14.9979 ppl 32720.6151
+epoch 0, minibatch 222/816, train minibatch log prob 16.5692 ppl 97234.2122
+epoch 0, minibatch 223/816, train minibatch log prob 15.1879 ppl 37326.4762
+epoch 0, minibatch 224/816, train minibatch log prob 13.8036 ppl 14298.3096
+epoch 0, minibatch 225/816, train minibatch log prob 15.1235 ppl 35696.4671
+epoch 0, minibatch 226/816, train minibatch log prob 14.8352 ppl 29230.1540
+epoch 0, minibatch 227/816, train minibatch log prob 13.5476 ppl 11973.4671
+epoch 0, minibatch 228/816, train minibatch log prob 15.7993 ppl 57026.3990
+epoch 0, minibatch 229/816, train minibatch log prob 15.4962 ppl 46220.5433
+epoch 0, minibatch 230/816, train minibatch log prob 16.7368 ppl 109210.7897
+epoch 0, minibatch 231/816, train minibatch log prob 15.8610 ppl 59516.7060
+epoch 0, minibatch 232/816, train minibatch log prob 14.5824 ppl 24532.4911
+epoch 0, minibatch 233/816, train minibatch log prob 14.2664 ppl 19706.9943
+epoch 0, minibatch 234/816, train minibatch log prob 14.4883 ppl 22983.3655
+epoch 0, minibatch 235/816, train minibatch log prob 12.3715 ppl 5298.8177
+epoch 0, minibatch 236/816, train minibatch log prob 15.3050 ppl 40482.5238
+epoch 0, minibatch 237/816, train minibatch log prob 13.0134 ppl 8268.3284
+epoch 0, minibatch 238/816, train minibatch log prob 14.6468 ppl 25652.0171
+epoch 0, minibatch 239/816, train minibatch log prob 13.7989 ppl 14251.7641
+epoch 0, minibatch 240/816, train minibatch log prob 14.3311 ppl 20610.1038
+epoch 0, minibatch 241/816, train minibatch log prob 14.9508 ppl 31670.3030
+epoch 0, minibatch 242/816, train minibatch log prob 13.9997 ppl 16380.8521
+epoch 0, minibatch 243/816, train minibatch log prob 13.1774 ppl 9264.1634
+epoch 0, minibatch 244/816, train minibatch log prob 13.9889 ppl 16258.9111
+epoch 0, minibatch 245/816, train minibatch log prob 14.4315 ppl 22095.2831
+epoch 0, minibatch 246/816, train minibatch log prob 13.4197 ppl 10958.1774
+epoch 0, minibatch 247/816, train minibatch log prob 15.2262 ppl 38329.8210
+epoch 0, minibatch 248/816, train minibatch log prob 15.8782 ppl 60230.4623
+epoch 0, minibatch 249/816, train minibatch log prob 14.2128 ppl 18987.5647
+epoch 0, minibatch 250/816, train minibatch log prob 14.7617 ppl 27779.0005
+epoch 0, minibatch 251/816, train minibatch log prob 14.2328 ppl 19252.9641
+epoch 0, minibatch 252/816, train minibatch log prob 14.8904 ppl 30369.9922
+epoch 0, minibatch 253/816, train minibatch log prob 15.2462 ppl 38864.5332
+epoch 0, minibatch 254/816, train minibatch log prob 15.0588 ppl 34130.2061
+epoch 0, minibatch 255/816, train minibatch log prob 14.2115 ppl 18971.2454
+epoch 0, minibatch 256/816, train minibatch log prob 15.6038 ppl 49797.9515
+epoch 0, minibatch 257/816, train minibatch log prob 14.8456 ppl 29441.6806
+epoch 0, minibatch 258/816, train minibatch log prob 14.9174 ppl 30943.9164
+epoch 0, minibatch 259/816, train minibatch log prob 14.9237 ppl 31079.2283
+epoch 0, minibatch 260/816, train minibatch log prob 12.8211 ppl 7236.8241
+epoch 0, minibatch 261/816, train minibatch log prob 15.3746 ppl 4248
