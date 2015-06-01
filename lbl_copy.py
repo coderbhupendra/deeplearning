@@ -18,7 +18,7 @@ import logging
 
 class NeuralLanguageModel(object):
     """
-    Log-bilinear language model class
+    neural language model class
     context are the previous words which we give as input inorder to predict the next word from vocablary
     Vocal_size is the size of vocablary
     K_feature if the size of feature vector for word here its is 20
@@ -87,7 +87,7 @@ class NeuralLanguageModel(object):
         
         
         # context word representations
-        self.r_w =T.reshape( self.look_up[x] , (batch_size,(K_feature*context_sz)) )
+        self.r_w =T.reshape( self.look_up[self.x] , (batch_size,(K_feature*context_sz)) )
       
        
         # predicted word representation for target word
@@ -177,11 +177,11 @@ def make_instances(text_tokenized, dictionary, context_sz):
 
     
 def train_nbl(train_data='train', dev_data='dev', test_data='test', 
-              K=5,hidden_units=20, context_sz=3, learning_rate=1.0, 
+              K=5,hidden_units=10, context_sz=3, learning_rate=1.0, 
               rate_update='simple', epochs=10, 
               batch_size=100, rng=None, patience=None, 
               patience_incr=2, improvement_thrs=0.995, 
-              validation_freq=20):
+              validation_freq=200):
     """
     Train neural model
     """
@@ -204,7 +204,7 @@ def train_nbl(train_data='train', dev_data='dev', test_data='test',
 
     """ here i am reading text file and tokenzing it """
     #large :edgeworth-parents.txt small :blake-poems.txt
-    with open('blake-poems.txt', 'rb') as fin:
+    with open('edgeworth-parents.txt', 'rb') as fin:
         raw = fin.read()
     tokens=word_tokenize(raw)
     text = nltk.Text(tokens)
@@ -224,14 +224,14 @@ def train_nbl(train_data='train', dev_data='dev', test_data='test',
     dictionary=dict(vocab_dic)
     #print(dictionary['how'])
     #large :'austen-emma.txt' small:burgess-busterbrown.txt
-    with open('burgess-busterbrown.txt', 'rb') as fin:
+    with open('austen-emma.txt', 'rb') as fin:
         raw_d = fin.read()
     tokens=word_tokenize(raw_d)
     text = nltk.Text(tokens)
     words = [w.lower() for w in tokens]
     dev_data = words
     #lareg :'melville-moby_dick.txt' small:shakespeare-macbeth.txt
-    with open('shakespeare-macbeth.txt', 'rb') as fin:
+    with open('melville-moby_dick.txt', 'rb') as fin:
         raw_t = fin.read()
     tokens=word_tokenize(raw_t)
     text = nltk.Text(tokens)
@@ -246,17 +246,17 @@ def train_nbl(train_data='train', dev_data='dev', test_data='test',
     dev_set_x, dev_set_y = make_instances(dev_data, dictionary, context_sz)
     test_set_x, test_set_y = make_instances(test_data, dictionary, context_sz)
    
-    print "\n\ntrain_set_x\n",(train_set_x.eval())
+    print "\n\ntrain_set_x\n",(test_set_x.eval())
     #print (type(train_set_x.eval()))
-    print "shape of x",(train_set_x.eval().shape)
-    print "\ntrain_set_y\n",(train_set_y.eval())
+    print "shape of x",(test_set_x.eval().shape)
+    print "\ntrain_set_y\n",(test_set_y.eval())
     #print (type(train_set_y.eval()))
-    print "shape of y ",(train_set_y.eval().shape)
+    print "shape of y ",(test_set_y.eval().shape)
     n_train_batches = train_set_x.get_value(borrow=True).shape[0] / batch_size
     n_dev_batches = dev_set_x.get_value(borrow=True).shape[0] / batch_size
     n_test_batches = test_set_x.get_value(borrow=True).shape[0] / batch_size
 
-    print('no of batches in training data%i'%n_train_batches)
+    print('no of batches in training data%i'%n_test_batches)
     #print('shape of dataset xrange')
     #print(train_set_x.get_value(borrow=True).shape)
     #print(train_set_x.get_value(borrow=True)[0:50])
@@ -291,9 +291,9 @@ def train_nbl(train_data='train', dev_data='dev', test_data='test',
 
     # function that computes log-probability of the test set
     logprob_test = theano.function(inputs=[index], outputs=cost,
-                                   givens={x: train_set_x[index*batch_size:
+                                   givens={x: test_set_x[index*batch_size:
                                                              (index+1)*batch_size],
-                                           y: train_set_y[index*batch_size:
+                                           y: test_set_y[index*batch_size:
                                                              (index+1)*batch_size]
                                            })
     
