@@ -125,6 +125,7 @@ def make_instances(text_tokenized, dictionary, context_sz):
     labels = []   
     token=0     
     no_tokens=len(text_tokenized)
+    oov_no=len(dictionary)
     #print(text_tokenized)
     for token in range(0,no_tokens,context_sz):
         
@@ -150,8 +151,8 @@ def make_instances(text_tokenized, dictionary, context_sz):
                                                 labels.append(dictionary[text_tokenized[token]])
                                                 #labels.append(token)
             else:
-                                                #labels.append(dictionary["oov"])
-                                                labels.append(no_tokens)
+                                                labels.append(dictionary["oov"])
+                                                #labels.append(no_tokens)
 
         #if (token<len(text_tokenized-1)):
         token+=1
@@ -180,7 +181,7 @@ def train_nbl(train_data='train', dev_data='dev', test_data='test',
               rate_update='simple', epochs=10, 
               batch_size=100, rng=None, patience=None, 
               patience_incr=2, improvement_thrs=0.995, 
-              validation_freq=200):
+              validation_freq=20):
     """
     Train neural model
     """
