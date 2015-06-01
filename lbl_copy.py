@@ -126,7 +126,7 @@ def make_instances(text_tokenized, dictionary, context_sz):
     token=0     
     no_tokens=len(text_tokenized)
     #print(text_tokenized)
-    for token in range(0,no_tokens,3):
+    for token in range(0,no_tokens,context_sz):
         
 
         sentence=text_tokenized[token:token+context_sz]
@@ -166,6 +166,7 @@ def make_instances(text_tokenized, dictionary, context_sz):
     #print(data)
     #print(labels)
     train_set_x, train_set_y = shared_dataset([data, labels])
+  
     #print('ss')
     #print(train_set_x.get_value(borrow=True))
     return train_set_x, train_set_y
@@ -179,7 +180,7 @@ def train_nbl(train_data='train', dev_data='dev', test_data='test',
               rate_update='simple', epochs=10, 
               batch_size=100, rng=None, patience=None, 
               patience_incr=2, improvement_thrs=0.995, 
-              validation_freq=1000):
+              validation_freq=200):
     """
     Train neural model
     """
@@ -202,7 +203,7 @@ def train_nbl(train_data='train', dev_data='dev', test_data='test',
 
     """ here i am reading text file and tokenzing it """
     #large :edgeworth-parents.txt small :blake-poems.txt
-    with open('edgeworth-parents.txt', 'rb') as fin:
+    with open('blake-poems.txt', 'rb') as fin:
         raw = fin.read()
     tokens=word_tokenize(raw)
     text = nltk.Text(tokens)
@@ -214,23 +215,22 @@ def train_nbl(train_data='train', dev_data='dev', test_data='test',
     size=len(vocab_data)
     no=range(size)
     print('size of vocab dictionary %i'%size)
-    print('size fo training data %i'%len(text))
+    print('size of training data %i'%len(text))
     
 
-    #print(R_values)
 
     vocab_dic = zip(vocab_data,no)
     dictionary=dict(vocab_dic)
     #print(dictionary['how'])
     #large :'austen-emma.txt' small:burgess-busterbrown.txt
-    with open('austen-emma.txt', 'rb') as fin:
+    with open('burgess-busterbrown.txt', 'rb') as fin:
         raw_d = fin.read()
     tokens=word_tokenize(raw_d)
     text = nltk.Text(tokens)
     words = [w.lower() for w in tokens]
     dev_data = words
     #lareg :'melville-moby_dick.txt' small:shakespeare-macbeth.txt
-    with open('melville-moby_dick.txt', 'rb') as fin:
+    with open('shakespeare-macbeth.txt', 'rb') as fin:
         raw_t = fin.read()
     tokens=word_tokenize(raw_t)
     text = nltk.Text(tokens)

@@ -1,5 +1,5 @@
 import nltk, re, pprint,urllib2,numpy
-from nltk import word_tokenize
+from nltk import word_tokenize ,FreqDist
 
 url = "http://www.gutenberg.org/files/2554/2554.txt"
 response = urllib2.urlopen(url)
@@ -9,6 +9,8 @@ text = nltk.Text(tokens)
 words = [w.lower() for w in tokens]
 vocab = sorted(set(words))
 
+fre=FreqDist(set(words))
+print(fre)
 print(type(words))
 print(text[1:10])
 print(text[5])
